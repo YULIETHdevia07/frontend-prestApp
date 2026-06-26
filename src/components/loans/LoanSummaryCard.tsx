@@ -12,7 +12,7 @@ interface LoanSimulationResultCardProps {
 }
 
 // Tarjeta lateral para mostrar el resultado de la simulación del préstamo.
-const LoanSimulationResultCard = ({ result }: LoanSimulationResultCardProps) => {
+const LoanSummaryCard = ({ result }: LoanSimulationResultCardProps) => {
     if (!result) {
         return (
             <Paper
@@ -185,4 +185,4 @@ const ResultRow = ({ label, value }: ResultRowProps) => {
     );
 };
 
-export default LoanSimulationResultCard;
+export default LoanSummaryCard;

@@ -140,7 +140,7 @@ components/
 │   └── DashboardLayout.tsx
 │
 ├── loans/
-│   └── LoanSimulationResultCard.tsx
+│   └── LoanSummaryCard.tsx
 │
 ├── pqr/
 │   ├── PqrChatView.tsx
@@ -199,9 +199,9 @@ En esta carpeta se ubican los componentes específicos del módulo de préstamos
 
 Estos componentes están relacionados directamente con la visualización de información, resultados o acciones propias de los préstamos o simulaciones de crédito.
 
-| Componente                     | Descripción                                                                                                                                                                                                     | Uso dentro del proyecto                                                                                 |
-| ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| `LoanSimulationResultCard.tsx` | Componente encargado de mostrar el resultado de la simulación de un préstamo. Presenta el total a pagar, monto prestado, interés aplicado, réditos generados, tiempo total, número de cuotas y valor por cuota. | Se utiliza en la vista del simulador de préstamos para mostrar de forma clara el resultado del cálculo. |
+| Componente            | Descripción                                                                                                                                                                                                     | Uso dentro del proyecto                                                                                 |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `LoanSummaryCard.tsx` | Componente encargado de mostrar el resultado de la simulación de un préstamo. Presenta el total a pagar, monto prestado, interés aplicado, réditos generados, tiempo total, número de cuotas y valor por cuota. | Se utiliza en la vista del simulador de préstamos para mostrar de forma clara el resultado del cálculo. |
 
 Este componente se ubica en `components/loans/` porque pertenece directamente al módulo de préstamos y no es un componente general del sistema.
 
@@ -993,7 +993,8 @@ utils/
 │   ├── excelUtils.ts
 │   ├── fileUtils.ts
 │   ├── formatText.ts
-│   └── getErrorMessage.ts
+│   ├── getErrorMessage.ts
+│   └── numberUtils.ts
 │
 ├── loans/
 │   └── loanCalculator.ts
@@ -1020,7 +1021,8 @@ utils/common/
 ├── excelUtils.ts
 ├── fileUtils.ts
 ├── formatText.ts
-└── getErrorMessage.ts
+├── getErrorMessage.ts
+└── numberUtils.ts
 ```
 
 ---
@@ -1108,6 +1110,22 @@ getErrorMessage()
 | Función                                  | Descripción                                                                                                                                        | Uso dentro del proyecto                                                                                                 |
 | ---------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
 | `getErrorMessage(error, defaultMessage)` | Recibe un error desconocido y verifica si es un error de Axios. Si el backend envía un mensaje, lo retorna; si no, retorna un mensaje por defecto. | Se utiliza en hooks, páginas o componentes para mostrar errores claros al usuario cuando una petición al backend falla. |
+
+---
+
+##### `numberUtils.ts`
+
+Este archivo contiene funciones auxiliares relacionadas con la limpieza y el formato de valores numéricos.
+
+```txt
+cleanNumberInput()
+formatNumberInput()
+```
+
+| Función               | Descripción                                                               | Uso dentro del proyecto                                                                                              |
+| --------------------- | ------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `cleanNumberInput()`  | Elimina todos los caracteres que no sean números dentro de un texto.      | Se utiliza en campos numéricos formateados para guardar valores limpios, sin puntos, comas, letras o símbolos.       |
+| `formatNumberInput()` | Formatea un número con separadores de miles usando el formato colombiano. | Se utiliza para mostrar valores numéricos de forma más legible en formularios, como montos, cuotas, abonos o saldos. |
 
 ---
 

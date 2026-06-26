@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
     Box,
     Button,
@@ -8,168 +7,36 @@ import {
 import CalculateOutlinedIcon from "@mui/icons-material/CalculateOutlined";
 import RestartAltOutlinedIcon from "@mui/icons-material/RestartAltOutlined";
 
-import { ValidationError } from "yup";
-
 import PageHeader from "../components/common/PageHeader";
 import FormSection from "../components/common/FormSection";
 import FormGrid from "../components/common/FormGrid";
+import ClearableSelect from "../components/common/ClearableSelect";
 import LoanSummaryCard from "../components/loans/LoanSummaryCard";
 
-import type {
-    LoanFrequency,
-    LoanSimulationForm,
-    LoanSimulationResult,
-} from "../interfaces/loans/loan.interface";
-
-import {
-    calculateLoanSimulation,
-} from "../utils/loans/loanCalculator";
-
-import { loanSimulationSchema } from "../validations/loans/loanValidation";
+import type { LoanFrequency } from "../interfaces/loans/loan.interface";
 
 import {
     loanFrequencyOptions,
     loanTermFrequencyOptions,
 } from "../data/loanOptions";
 
-import ClearableSelect from "../components/common/ClearableSelect";
-
-// Estado inicial del formulario de simulación de préstamos.
-const initialForm: LoanSimulationForm = {
-    amount: "",
-    interestRate: "",
-    interestFrequency: "",
-    termValue: "",
-    termFrequency: "",
-    paymentFrequency: "",
-};
-
-// Errores de validación del formulario de simulación.
-type LoanFormErrors = Partial<Record<keyof LoanSimulationForm, string>>;
+import { formatNumberInput } from "../utils/common/numberUtils";
+import { useLoanSimulator } from "../hooks/loans/useLoanSimulator";
 
 // Página principal del simulador de préstamos.
 const LoanSimulator = () => {
-    const [form, setForm] = useState<LoanSimulationForm>(initialForm);
-    const [result, setResult] = useState<LoanSimulationResult | null>(null);
-    const [errors, setErrors] = useState<LoanFormErrors>({});
+    const {
+        form,
+        result,
+        errors,
+        hasFormChanges,
 
-    // Verifica si el formulario tiene cambios para habilitar el botón de limpiar.
-    const hasFormChanges = JSON.stringify(form) !== JSON.stringify(initialForm);
-
-    // Mantiene el espacio visual de los mensajes de error en los campos.
-    const fieldStyle = {
-        "& .MuiFormHelperText-root": {
-            minHeight: "20px",
-        },
-    };
-
-    // Actualiza un campo del formulario y limpia su error correspondiente.
-    const handleChange = (
-        field: keyof LoanSimulationForm,
-        value: string | number
-    ) => {
-        setForm((prev) => ({
-            ...prev,
-            [field]: value,
-        }));
-
-        setErrors((prev) => ({
-            ...prev,
-            [field]: "",
-        }));
-    };
-
-    // Convierte el valor ingresado en número cuando el campo no está vacío.
-    const handleNumberChange = (
-        field: keyof LoanSimulationForm,
-        value: string
-    ) => {
-        handleChange(field, value === "" ? "" : Number(value));
-    };
-
-    // Elimina caracteres que no sean números.
-    const cleanNumberInput = (value: string) => {
-        return value.replace(/\D/g, "");
-    };
-
-    // Formatea un número para mostrarlo con separadores de miles.
-    const formatNumberInput = (value: number | "") => {
-        if (value === "") return "";
-
-        return new Intl.NumberFormat("es-CO", {
-            maximumFractionDigits: 0,
-        }).format(value);
-    };
-
-    // Limpia, convierte y guarda el valor de un campo numérico formateado.
-    const handleFormattedNumberChange = (
-        field: keyof LoanSimulationForm,
-        value: string
-    ) => {
-        const cleanValue = cleanNumberInput(value);
-        handleChange(field, cleanValue === "" ? "" : Number(cleanValue));
-    };
-
-    // Valida el formulario usando el esquema de Yup.
-    const validateForm = async () => {
-        try {
-            await loanSimulationSchema.validate(form, {
-                abortEarly: false,
-            });
-
-            setErrors({});
-            return true;
-        } catch (error) {
-            if (error instanceof ValidationError) {
-                const validationErrors: LoanFormErrors = {};
-
-                error.inner.forEach((currentError) => {
-                    const field = currentError.path as keyof LoanSimulationForm;
-
-                    if (field && !validationErrors[field]) {
-                        validationErrors[field] = currentError.message;
-                    }
-                });
-
-                setErrors(validationErrors);
-            }
-
-            return false;
-        }
-    };
-
-    // Ejecuta la simulación del préstamo si el formulario es válido.
-    const handleSimulate = async () => {
-        const isValid = await validateForm();
-
-        if (!isValid) {
-            setResult(null);
-            return;
-        }
-
-        const amount = Number(form.amount);
-        const interestRate = Number(form.interestRate);
-        const termValue = Number(form.termValue);
-
-        const simulation = calculateLoanSimulation({
-            ...form,
-            amount,
-            interestRate,
-            termValue,
-            interestFrequency: form.interestFrequency as LoanFrequency,
-            termFrequency: form.termFrequency as LoanFrequency,
-            paymentFrequency: form.paymentFrequency as LoanFrequency,
-        });
-
-        setResult(simulation);
-    };
-
-    // Limpia el formulario, los errores y el resultado de la simulación.
-    const handleClearForm = () => {
-        setForm(initialForm);
-        setResult(null);
-        setErrors({});
-    };
+        handleChange,
+        handleNumberChange,
+        handleFormattedNumberChange,
+        handleSimulate,
+        handleClearForm,
+    } = useLoanSimulator();
 
     return (
         <Box sx={{ width: "100%" }}>
@@ -241,14 +108,13 @@ const LoanSimulator = () => {
                                 required
                                 value={formatNumberInput(form.amount)}
                                 error={Boolean(errors.amount)}
-                                helperText={errors.amount || " "}
+                                helperText={errors.amount}
                                 onChange={(event) =>
                                     handleFormattedNumberChange(
                                         "amount",
                                         event.target.value
                                     )
                                 }
-                                sx={fieldStyle}
                             />
 
                             <TextField
@@ -258,14 +124,13 @@ const LoanSimulator = () => {
                                 required
                                 value={form.interestRate}
                                 error={Boolean(errors.interestRate)}
-                                helperText={errors.interestRate || " "}
+                                helperText={errors.interestRate}
                                 onChange={(event) =>
                                     handleNumberChange(
                                         "interestRate",
                                         event.target.value
                                     )
                                 }
-                                sx={fieldStyle}
                             />
 
                             <ClearableSelect
@@ -299,14 +164,13 @@ const LoanSimulator = () => {
                                 required
                                 value={form.termValue}
                                 error={Boolean(errors.termValue)}
-                                helperText={errors.termValue || " "}
+                                helperText={errors.termValue}
                                 onChange={(event) =>
                                     handleNumberChange(
                                         "termValue",
                                         event.target.value
                                     )
                                 }
-                                sx={fieldStyle}
                             />
 
                             <ClearableSelect
