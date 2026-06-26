@@ -10,6 +10,7 @@ import MyPqrs from "../pages/user/MyPqrs";
 import AdminPqrs from "../pages/admin/AdminPqrs";
 import AdminUser from "../pages/admin/AdminUser";
 import AgentPqrs from "../pages/agent/AgentPqrs";
+import LoanSimulator from "../pages/LoanSimulator";
 
 const AppRoutes = () => {
   return (
@@ -24,11 +25,12 @@ const AppRoutes = () => {
           {/* PQR */}
           <Route path="/dashboard/pqrs/my" element={<MyPqrs />} />
           <Route path="/dashboard/pqrs/create" element={<CreatePqr />} />
+          <Route path="/agent/pqrs" element={<AgentPqrs />} />
           <Route path="/dashboard/pqrs" element={<AdminPqrs />} />
           {/* Usuario */}
           <Route path="/users" element={<AdminUser />} />
-          {/* Agent */}
-          <Route path="/agent/pqrs" element={<AgentPqrs />} />
+          {/* Credito */}
+          <Route path="/dashboard/credits/simulator" element={<LoanSimulator />} />
         </Route>
       </Route>
     </Routes>

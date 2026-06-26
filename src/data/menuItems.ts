@@ -68,4 +68,22 @@ export const menuItems = [
       },
     ],
   },
+
+  {
+    module: "Créditos",
+    roles: ["ADMIN"],
+    submodules: [
+      {
+        name: "Gestión de créditos",
+        roles: ["ADMIN"],
+        options: [
+          {
+            label: "Simulador de préstamos",
+            path: "/dashboard/credits/simulator",
+            roles: ["ADMIN"],
+          },
+        ],
+      },
+    ],
+  },
 ];

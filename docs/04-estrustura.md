@@ -125,6 +125,8 @@ components/
 │   ├── CustomSnackbar.tsx
 │   ├── DataTable.tsx
 │   ├── EmptyState.tsx
+│   ├── FormGrid.tsx
+│   ├── FormSection.tsx
 │   ├── Header.tsx
 │   ├── LoadingBox.tsx
 │   ├── NotificationBell.tsx
@@ -136,6 +138,9 @@ components/
 │
 ├── layouts/
 │   └── DashboardLayout.tsx
+│
+├── loans/
+│   └── LoanSimulationResultCard.tsx
 │
 ├── pqr/
 │   ├── PqrChatView.tsx
@@ -161,6 +166,8 @@ Estos componentes no pertenecen exclusivamente a un módulo, por lo tanto, puede
 | `CustomSnackbar.tsx`    | Componente reutilizable para mostrar mensajes temporales al usuario, como acciones exitosas, errores, advertencias o información.                                                                         | Puede utilizarse en cualquier vista que necesite notificar resultados de acciones realizadas.                                                                                 |
 | `DataTable.tsx`         | Componente reutilizable para mostrar información en formato de tabla. Puede recibir columnas, filas y acciones configuradas desde la vista donde se use.                                                  | Puede utilizarse para listar usuarios, PQR, roles, reportes u otros registros del sistema.                                                                                    |
 | `EmptyState.tsx`        | Componente reutilizable para mostrar un mensaje cuando no existen datos disponibles en una vista.                                                                                                         | Puede utilizarse cuando no hay usuarios, PQR, resultados de búsqueda o registros para mostrar.                                                                                |
+| `FormGrid.tsx`          | Componente reutilizable que organiza campos de formularios mediante CSS Grid. Permite definir columnas responsivas según el tamaño de pantalla.                                                           | Puede utilizarse en formularios de préstamos, usuarios, PQR u otros módulos que requieran distribuir campos de manera ordenada.                                               |
+| `FormSection.tsx`       | Componente reutilizable que agrupa campos dentro de una sección visual con título y contenedor.                                                                                                           | Puede utilizarse para dividir formularios en secciones como datos principales, condiciones, información adicional o resultados.                                               |
 | `Header.tsx`            | Componente reutilizable que representa el encabezado superior del sistema. Puede mostrar información del usuario autenticado, acciones rápidas o el botón para abrir y cerrar el menú lateral.            | Se utiliza principalmente dentro del layout principal de las vistas protegidas.                                                                                               |
 | `LoadingBox.tsx`        | Componente reutilizable para mostrar un estado de carga mientras se obtiene información del backend.                                                                                                      | Puede utilizarse en tablas, formularios, vistas de detalle o cualquier módulo que cargue datos.                                                                               |
 | `NotificationBell.tsx`  | Componente reutilizable que muestra la campana de notificaciones, el contador de notificaciones no leídas y el listado de notificaciones del usuario autenticado.                                         | Se utiliza dentro de `Header.tsx` para mostrar novedades importantes del sistema, como creación, asignación, cierre o calificación de PQR.                                    |
@@ -183,6 +190,20 @@ En esta carpeta se ubican los componentes encargados de definir la estructura vi
 | `DashboardLayout.tsx` | Define la estructura principal de las páginas internas del sistema. Organiza elementos como el header, el sidebar y el área donde se renderiza el contenido de cada vista. | Se utiliza para envolver páginas protegidas como Dashboard, Usuarios, PQR, Reportes u otros módulos internos. |
 
 El layout permite mantener una misma estructura visual en las páginas principales del sistema y evita repetir el mismo diseño en cada vista.
+
+---
+
+#### `src/components/loans/`
+
+En esta carpeta se ubican los componentes específicos del módulo de préstamos.
+
+Estos componentes están relacionados directamente con la visualización de información, resultados o acciones propias de los préstamos o simulaciones de crédito.
+
+| Componente                     | Descripción                                                                                                                                                                                                     | Uso dentro del proyecto                                                                                 |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `LoanSimulationResultCard.tsx` | Componente encargado de mostrar el resultado de la simulación de un préstamo. Presenta el total a pagar, monto prestado, interés aplicado, réditos generados, tiempo total, número de cuotas y valor por cuota. | Se utiliza en la vista del simulador de préstamos para mostrar de forma clara el resultado del cálculo. |
+
+Este componente se ubica en `components/loans/` porque pertenece directamente al módulo de préstamos y no es un componente general del sistema.
 
 ---
 
@@ -281,6 +302,7 @@ Ejemplos:
 ```txt
 data/
 ├── appBrand.ts
+├── loanOptions.ts
 ├── menuItems.ts
 ├── pqrOptions.ts
 └── userRoles.ts
@@ -320,6 +342,19 @@ Su objetivo principal es centralizar los datos relacionados con el nombre de la 
 | `logoIcon`      | Contiene la ruta del ícono del logo a color.            | Se utiliza cuando se necesita una versión más pequeña del logo, por ejemplo en menús contraídos o vistas responsive. |
 | `logoIconWhite` | Contiene la ruta del ícono del logo en color blanco.    | Se utiliza en fondos oscuros, barras laterales o encabezados institucionales.                                        |
 | `logoAlt`       | Contiene el texto alternativo de la imagen.             | Mejora la accesibilidad y sirve como descripción si la imagen no carga.                                              |
+
+---
+
+#### `loanOptions.ts`
+
+El archivo `loanOptions.ts` contiene las opciones estáticas utilizadas en el formulario de simulación de préstamos.
+
+Su objetivo principal es centralizar las listas que se usan en los selectores relacionados con la frecuencia del interés, la unidad del plazo y la frecuencia de pago.
+
+| Constante                  | Descripción                                                           | Uso dentro del proyecto                                                                                             |
+| -------------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `loanFrequencyOptions`     | Contiene las frecuencias disponibles para intereses o pagos.          | Se utiliza en selectores donde el usuario escoge si el interés o el pago será diario, semanal, quincenal o mensual. |
+| `loanTermFrequencyOptions` | Contiene las unidades disponibles para definir el plazo del préstamo. | Se utiliza en el formulario para indicar si el plazo está expresado en días, semanas, quincenas o meses.            |
 
 ---
 
@@ -486,6 +521,9 @@ interfaces/
 ├── auth/
 │   └── auth.interface.ts
 │
+├── loans/
+│   └── loan.interface.ts
+│
 ├── notifications/
 │   └── notification.interface.ts
 │
@@ -510,6 +548,19 @@ interfaces/auth/
 | Archivo             | Descripción                                                                                                                          | Uso dentro del proyecto                                                                       |
 | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------- |
 | `auth.interface.ts` | Define los tipos relacionados con autenticación, inicio de sesión, registro, respuestas del backend y datos del usuario autenticado. | Se utiliza en servicios, hooks, contexto y páginas relacionadas con login, registro y sesión. |
+
+---
+
+#### Interfaces del módulo de préstamos
+
+```txt
+interfaces/loans/
+└── loan.interface.ts
+```
+
+| Archivo             | Descripción                                                                                                                                      | Uso dentro del proyecto                                                                                   |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------- |
+| `loan.interface.ts` | Define los tipos e interfaces relacionados con la simulación de préstamos, incluyendo frecuencias, datos del formulario y resultado del cálculo. | Se utiliza en componentes, utilidades, validaciones y páginas relacionadas con el simulador de préstamos. |
 
 ---
 
@@ -944,6 +995,9 @@ utils/
 │   ├── formatText.ts
 │   └── getErrorMessage.ts
 │
+├── loans/
+│   └── loanCalculator.ts
+│
 ├── pqrs/
 │   └── pqrUtils.ts
 │
@@ -1057,6 +1111,53 @@ getErrorMessage()
 
 ---
 
+#### Utilidades del módulo de préstamos
+
+Los archivos ubicados en `utils/loans/` contienen funciones auxiliares específicas del módulo de préstamos.
+
+```txt
+utils/loans/
+└── loanCalculator.ts
+```
+
+##### `loanCalculator.ts`
+
+El archivo `loanCalculator.ts` contiene funciones auxiliares relacionadas con el cálculo y formato de préstamos.
+
+Este archivo no representa una vista, no maneja estados y no realiza peticiones al backend. Su función principal es realizar cálculos internos del simulador y devolver datos listos para mostrar en pantalla.
+
+Funciones principales:
+
+```txt
+getLoanFrequencyLabel()
+formatCurrency()
+calculateLoanSimulation()
+```
+
+| Función                     | Descripción                                                               | Uso dentro del proyecto                                                             |
+| --------------------------- | ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `getLoanFrequencyLabel()`   | Convierte una frecuencia técnica en una etiqueta legible para el usuario. | Se utiliza para mostrar textos como Diario, Semanal, Quincenal o Mensual.           |
+| `formatCurrency()`          | Formatea valores numéricos como moneda colombiana COP.                    | Se utiliza para mostrar montos, réditos, cuotas y total a pagar.                    |
+| `calculateLoanSimulation()` | Calcula el resultado completo de la simulación del préstamo.              | Se utiliza para obtener réditos, total a pagar, número de cuotas y valor por cuota. |
+
+Proceso general del cálculo:
+
+```txt
+1. Convierte los valores del formulario a número.
+2. Obtiene la frecuencia del interés, plazo y pago.
+3. Calcula el total de días del préstamo.
+4. Calcula cuántos periodos de interés aplican.
+5. Calcula el total de réditos generados.
+6. Calcula el total a pagar.
+7. Calcula el número de cuotas.
+8. Calcula el valor aproximado de cada cuota.
+```
+
+Este archivo permite separar la lógica matemática del componente visual, haciendo que el formulario y la tarjeta de resultado sean más limpios y fáciles de mantener.
+
+
+---
+
 #### Utilidades del módulo PQR
 
 Los archivos ubicados en `utils/pqrs/` contienen funciones específicas del módulo de PQR.
@@ -1107,11 +1208,11 @@ getUserRoleIcon()
 getUserRoleLabel()
 ```
 
-| Función                  | Descripción                                                                                          | Uso dentro del proyecto                                                            |
-| ------------------------ | ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| Función                  | Descripción                                                                                          | Uso dentro del proyecto                                                             |
+| ------------------------ | ---------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
 | `getUserRoleColor(role)` | Devuelve el color visual que debe tener un rol de usuario en componentes como `Chip` de Material UI. | Se utiliza para diferenciar visualmente roles como administrador, agente o usuario. |
-| `getUserRoleIcon(role)`  | Retorna el ícono correspondiente según el rol del usuario.                                           | Se utiliza en componentes visuales donde se muestra el rol acompañado de un ícono. |
-| `getUserRoleLabel(role)` | Convierte el rol técnico del sistema en un texto más claro para mostrar al usuario.                  | Se utiliza para mostrar etiquetas como `Administrador`, `Agente` o `Usuario`.      |
+| `getUserRoleIcon(role)`  | Retorna el ícono correspondiente según el rol del usuario.                                           | Se utiliza en componentes visuales donde se muestra el rol acompañado de un ícono.  |
+| `getUserRoleLabel(role)` | Convierte el rol técnico del sistema en un texto más claro para mostrar al usuario.                  | Se utiliza para mostrar etiquetas como `Administrador`, `Agente` o `Usuario`.       |
 
 Este archivo conserva la extensión `.tsx` porque una de sus funciones retorna íconos de Material UI como componentes JSX.
 
@@ -1132,6 +1233,9 @@ validations/
 │
 ├── auth/
 │   └── authValidation.ts
+│
+├── loans/
+│   └── loanValidation.ts
 │
 └── pqrs/
     └── pqrValidation.ts
@@ -1163,6 +1267,27 @@ registerSchema()
 | `registerSchema()` | Valida los datos necesarios para registrar un nuevo usuario, como nombre, correo y contraseña. | Se utiliza en `useRegister.ts`. |
 
 Este archivo permite mantener las reglas de autenticación centralizadas y evita repetir validaciones directamente en las páginas `Login.tsx` o `Register.tsx`.
+
+---
+
+#### Validaciones del módulo de préstamos
+
+```txt
+validations/loans/
+└── loanValidation.ts
+```
+
+##### `loanValidation.ts`
+
+Este archivo contiene las reglas de validación relacionadas con el formulario de simulación de préstamos.
+
+```txt
+loanSimulationSchema()
+```
+
+| Esquema                  | Descripción                                                                                                          | Uso dentro del proyecto                                   |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| `loanSimulationSchema()` | Valida los datos necesarios para simular un préstamo, como monto, porcentaje de interés, plazo y frecuencia de pago. | Se utiliza en hooks y páginas relacionadas con préstamos. |
 
 ---
 
